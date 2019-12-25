@@ -35,7 +35,7 @@
 
 					<% if @book.user == current_user %>
 						<td><%= link_to "Edit",edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %></td>
-						<td><%= link_to "Destroy",book_path, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
+						<td><%= link_to "Destroy",book_path(@book), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
 					<% end %>
 				</tr>
 		</table>
@@ -46,17 +46,34 @@
 			            <%= f.text_area :comment, rows:'5', class: "form-control" %>
 			        </div>
 			    </div>
-			    <%= f.submit "送信する", class: "btn btn-lg btn-base-1 mt-20 pull-right" %>
+			    <%= f.submit "送信する", class: "btn btn-lg btn-primary mt-20 pull-right" %>
 			<% end %>
 		</div>
+		<div class="clearfix"></div>
+
+		<% if @book_comment.errors.any? %>
+			<div class="alert alert-danger">
+				<h2><%= @book_comment.errors.count %>errors prohibited this obj from being saved:</h2>
+				<ul>
+					<% @book_comment.errors.full_messages.each do |message| %>
+					<li><%= message %></li>
+					<% end %>
+				</ul>
+			</div>
+		<% end %>
+
+		<div class="col-xs-3">
+		<h3>コメント(<%= @book.book_comments.count %>件)</h3>
 		<div class="comment-author clearfix">
 			<% @book.book_comments.each do |book_comment| %>
 	            <a href="#" class="link-author"><%= book_comment.user.name %></a>
 	            <span class="comment-meta">
 	              <span class="comment-date"><%= book_comment.created_at.strftime('%Y/%m/%d') %></span>
 	            </span>
-	            <%= link_to "削除する", book_book_comment_path(@book,book_comment), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"} %>
-	        	<div class="comment-entry"><%= book_comment.comment %></div>
+	            <% if book_comment.user == current_user %>
+	            	<%= link_to "削除する", book_book_comment_path(@book,book_comment), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"} %>
+	            <% end %>
+	        	<div class="comment-entry"><%= book_comment.comment %></div><br>
         	<% end %>
         </div>
 	</div>

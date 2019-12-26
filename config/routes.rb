@@ -10,4 +10,7 @@ Rails.application.routes.draw do
   	resources :book_comments, only: [:create, :destroy] #resources複数形にすることでidが付与される
   	resource :favorites, only: [:create, :destroy]
   end
+  resources :relationships, only: [:create, :destroy]
+  get 'users/:id/followings' => 'relationships#followings_index', as: 'followings'
+  get 'users/:id/followers' => 'relationships#followers_index', as: 'followers'
 end

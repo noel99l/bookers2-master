@@ -4,6 +4,7 @@ class BookCommentsController < ApplicationController
         @book_comment = current_user.book_comments.new(post_comment_params)
         @book_comment.book_id = @book.id
         if @book_comment.save
+           flash[:success] = "Comment was successfully created."
            redirect_to @book
         else
            @user = current_user

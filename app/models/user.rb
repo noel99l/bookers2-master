@@ -16,18 +16,32 @@ class User < ApplicationRecord
   validates :name, length: {maximum: 20, minimum: 2}
   validates :introduction, length: {maximum: 50}
 
-  def follow(other_user)
-    unless self == other_user
-      self.relationships.find_or_create_by(follow_id: other_user.id)
+    def follow(other_user)
+      unless self == other_user
+        self.relationships.find_or_create_by(follow_id: other_user.id)
+      end
     end
-  end
 
-  def unfollow(other_user)
-    relationship = self.relationships.find_by(follow_id: other_user.id)
-    relationship.destroy if relationship
-  end
+    def unfollow(other_user)
+      relationship = self.relationships.find_by(follow_id: other_user.id)
+      relationship.destroy if relationship
+    end
 
-  def following?(other_user)
-    self.followings.include?(other_user)
-  end
+    def following?(other_user)
+      self.followings.include?(other_user)
+    end
+
+    def self.search(method,word)
+        if method == "forward_match"
+            @users = User.where("name LIKE?","#{word}%") #nameカラムから検索
+        elsif method == "backward_match"
+            @users = User.where("name LIKE?","%#{word}")
+        elsif method == "perfect_match"
+            @users = User.where("name LIKE?","#{word}")
+        elsif method == "partial_match"
+            @users = User.where("name LIKE?","%#{word}%")
+        else
+            @users = User.all
+        end
+    end
 end

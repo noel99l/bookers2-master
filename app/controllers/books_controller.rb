@@ -26,7 +26,7 @@ class BooksController < ApplicationController
   	if @book.save #入力されたデータをdbに保存する。
   		redirect_to book_path(@book.id), notice: "successfully created book!"#保存された場合の移動先を指定。
   	else
-      @books = Book.all
+      @books = Book.paginate(page: params[:page], per_page: 10).all
   		render 'index'
   	end
   end
